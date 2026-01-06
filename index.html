@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jack's AI Games</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0a0e27;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(0, 102, 204, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(120, 40, 200, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(0, 150, 255, 0.05) 0%, transparent 40%);
+            color: #ffffff;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0px, transparent 1px, transparent 2px, rgba(255,255,255,0.03) 3px),
+                repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, transparent 1px, transparent 2px, rgba(255,255,255,0.03) 3px);
+            background-size: 4px 4px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 2;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0066cc 0%, #004d99 50%, #7828c8 100%);
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 102, 204, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.3;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            letter-spacing: 2px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+            text-shadow: 0 1px 5px rgba(0,0,0,0.3);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .upload-section {
+            background: linear-gradient(135deg, #1a1f3a 0%, #2a2f4a 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 102, 204, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0, 102, 204, 0.03) 10px, rgba(0, 102, 204, 0.03) 20px);
+            pointer-events: none;
+        }
+
+        .upload-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .upload-section h2 {
+            color: #5fb3f6;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            text-shadow: 0 2px 10px rgba(0, 102, 204, 0.5);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #b0c4de;
+            font-weight: 600;
+            font-size: 1.05em;
+        }
+
+        input[type="text"], input[type="file"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #2a4a6a;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #1a2840 0%, #243550 100%);
+            color: #ffffff;
+            font-size: 16px;
+            transition: all 0.3s;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        input[type="text"]::placeholder {
+            color: #6a8aaa;
+        }
+
+        input[type="text"]:focus, input[type="file"]:focus {
+            outline: none;
+            border-color: #0066cc;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2), inset 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #0066cc 0%, #0052a3 50%, #7828c8 100%);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 102, 204, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .search-bar {
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 18px 50px 18px 20px;
+            font-size: 18px;
+            border: 2px solid #2a4a6a;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #1a2840 0%, #243550 100%);
+            color: #ffffff;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.3), 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .search-bar::after {
+            content: '🔍';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            background: linear-gradient(135deg, #1a2840 0%, #243550 100%);
+            border: 2px solid #2a4a6a;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: bold;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(0, 102, 204, 0.05) 5px, rgba(0, 102, 204, 0.05) 10px);
+        }
+
+        .tab span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .tab:hover {
+            border-color: #0066cc;
+            transform: translateY(-2px);
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%);
+            border-color: #0066cc;
+            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.5);
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .game-card {
+            background: linear-gradient(135deg, #1a2840 0%, #243550 100%);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 2px solid #2a4a6a;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0, 102, 204, 0.03) 10px, rgba(0, 102, 204, 0.03) 20px);
+            pointer-events: none;
+        }
+
+        .game-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 30px rgba(0, 102, 204, 0.5);
+            border-color: #0066cc;
+        }
+
+        .game-thumbnail {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #0066cc 0%, #004d99 50%, #7828c8 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 70px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-thumbnail::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 15px 15px;
+        }
+
+        .game-info {
+            padding: 20px;
+            position: relative;
+        }
+
+        .game-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #5fb3f6;
+        }
+
+        .game-description {
+            font-size: 0.95em;
+            color: #b0c4de;
+            margin-bottom: 15px;
+        }
+
+        .game-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .play-button, .delete-button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .play-button {
+            background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%);
+            color: white;
+            box-shadow: 0 2px 10px rgba(0, 102, 204, 0.4);
+        }
+
+        .play-button:hover {
+            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .delete-button {
+            background: linear-gradient(135deg, #c41e3a 0%, #8b1a2d 100%);
+            color: white;
+            box-shadow: 0 2px 10px rgba(196, 30, 58, 0.4);
+        }
+
+        .delete-button:hover {
+            box-shadow: 0 4px 15px rgba(196, 30, 58, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: #6a8aaa;
+        }
+
+        .empty-state h3 {
+            font-size: 2em;
+            margin-bottom: 15px;
+            color: #5fb3f6;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            background: linear-gradient(135deg, #1a2840 0%, #243550 100%);
+            border: 2px solid;
+        }
+
+        .message.success {
+            border-color: #28a745;
+            color: #4ade80;
+        }
+
+        .message.error {
+            border-color: #c41e3a;
+            color: #ff6b6b;
+        }
+    </style>
+</head>
+<body>
+    <div class="content-wrapper">
+        <div class="header">
+            <div class="header-content">
+                <h1>🎮 Jack's AI Games</h1>
+                <p>Your Personal Gaming Universe</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="upload-section">
+                <div class="upload-content">
+                    <h2>📤 Upload Your Game</h2>
+                    <div id="message" class="message"></div>
+                    <div class="form-group">
+                        <label for="gameName">Game Name:</label>
+                        <input type="text" id="gameName" placeholder="Enter game name...">
+                    </div>
+                    <div class="form-group">
+                        <label for="gameFile">Upload HTML Game File:</label>
+                        <input type="file" id="gameFile" accept=".html">
+                    </div>
+                    <button class="btn" onclick="uploadGame()">
+                        <span>🚀 Upload Game</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('my')">
+                    <span>🎯 My Games</span>
+                </div>
+                <div class="tab" onclick="switchTab('ai')">
+                    <span>🤖 AI Games Collection</span>
+                </div>
+            </div>
+
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search games..." onkeyup="filterGames()">
+            </div>
+
+            <div id="gamesContainer">
+                <div class="empty-state">
+                    <h3>No games yet!</h3>
+                    <p>Upload your first HTML game to get started</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let myGames = [];
+        let aiGames = [];
+        let currentTab = 'my';
+
+        function loadMyGames() {
+            const saved = localStorage.getItem('myGames');
+            if (saved) {
+                myGames = JSON.parse(saved);
+            }
+        }
+
+        function saveMyGames() {
+            localStorage.setItem('myGames', JSON.stringify(myGames));
+        }
+
+        function getIconForGame(fileName) {
+            const name = fileName.toLowerCase();
+            
+            // Check for exact matches first (for specific game names)
+            const exactMatches = {
+                '2048.html': '🔢',
+                'atari breakout.html': '🧱',
+                'block blast.html': '💥',
+                'chess.html': '♟️',
+                'connect 4.html': '🔴',
+                'flappy bird.html': '🐦',
+                'mc clone.html': '🟫',
+                'mc clone v2.html': '⛏️',
+                'minesweeper.html': '💣',
+                'pong.html': '🏓',
+                'powdersim.html': '⚗️',
+                'snake.html': '🐍',
+                'snake v2.html': '🐍',
+                'tetris v2.html': '🟦',
+                'tic-tac-toe.html': '❌'
+            };
+            
+            // Check exact filename match
+            if (exactMatches[name]) {
+                return exactMatches[name];
+            }
+            
+            // Keyword matching as fallback
+            const iconMap = {
+                '2048': '🔢',
+                'atari': '🧱',
+                'breakout': '🧱',
+                'block': '💥',
+                'blast': '💥',
+                'chess': '♟️',
+                'connect': '🔴',
+                'flappy': '🐦',
+                'bird': '🐦',
+                'mc clone': '🟫',
+                'minecraft': '🟫',
+                'minesweeper': '💣',
+                'mine': '💣',
+                'pong': '🏓',
+                'powder': '⚗️',
+                'snake': '🐍',
+                'tetris': '🟦',
+                'tic': '❌',
+                'tac': '❌',
+                'toe': '❌',
+                'space': '🚀',
+                'invader': '👾',
+                'pacman': '👻',
+                'mario': '🍄',
+                'sonic': '💨',
+                'brick': '🧱',
+                'dino': '🦖',
+                'puzzle': '🧩',
+                'maze': '🌀',
+                'race': '🏎️',
+                'racing': '🏎️',
+                'car': '🚗',
+                'shooter': '🔫',
+                'shoot': '🎯',
+                'zombie': '🧟',
+                'RPG': '⚔️',
+                'sword': '⚔️',
+                'card': '🃏',
+                'poker': '🃏',
+                'slot': '🎰',
+                'dice': '🎲',
+                'match': '💎',
+                'candy': '🍬',
+                'fruit': '🍎',
+                'farm': '🚜',
+                'cooking': '👨‍🍳',
+                'restaurant': '🍽️',
+                'tower': '🗼',
+                'defense': '🛡️',
+                'battle': '⚔️',
+                'war': '💣',
+                'jump': '🦘',
+                'platform': '🪜',
+                'adventure': '🗺️',
+                'quest': '🗡️',
+                'treasure': '💰',
+                'pirate': '🏴‍☠️',
+                'ninja': '🥷',
+                'robot': '🤖',
+                'alien': '👽',
+                'monster': '👹',
+                'dragon': '🐉',
+                'fantasy': '🧙',
+                'magic': '✨',
+                'wizard': '🧙‍♂️',
+                'football': '⚽',
+                'soccer': '⚽',
+                'basketball': '🏀',
+                'tennis': '🎾',
+                'baseball': '⚾',
+                'golf': '⛳',
+                'bowling': '🎳',
+                'pool': '🎱',
+                'billiard': '🎱',
+                'dart': '🎯',
+                'archery': '🏹',
+                'fishing': '🎣',
+                'ski': '⛷️',
+                'skate': '⛸️',
+                'surf': '🏄',
+                'swim': '🏊',
+                'run': '🏃',
+                'pixel': '👾',
+                'retro': '🕹️',
+                'arcade': '🎮',
+                'classic': '🎮',
+                'sudoku': '🔢',
+                'trivia': '❓',
+                'quiz': '❓',
+                'word': '📝',
+                'memory': '🧠',
+                'brain': '🧠',
+                'music': '🎵',
+                'rhythm': '🎶',
+                'piano': '🎹',
+                'drum': '🥁',
+                'paint': '🎨',
+                'draw': '🖌️',
+                'color': '🎨',
+                'idle': '⏱️',
+                'clicker': '👆',
+                'simulator': '🎮',
+                'tycoon': '💼',
+                'city': '🏙️',
+                'build': '🏗️',
+                'craft': '⛏️',
+                'rpg': '⚔️'
+            };
+            
+            for (const [keyword, icon] of Object.entries(iconMap)) {
+                if (name.includes(keyword)) {
+                    return icon;
+                }
+            }
+            
+            return '🎮';
+        }
+
+        async function loadAIGames() {
+            try {
+                const response = await fetch('games/');
+                const text = await response.text();
+                
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(text, 'text/html');
+                const links = doc.querySelectorAll('a');
+                
+                aiGames = [];
+                links.forEach(link => {
+                    const href = link.getAttribute('href');
+                    if (href && href.endsWith('.html') && !href.startsWith('..')) {
+                        const name = href.replace('.html', '').replace(/-|_/g, ' ');
+                        const capitalizedName = name.split(' ')
+                            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                            .join(' ');
+                        
+                        aiGames.push({
+                            name: capitalizedName,
+                            path: 'games/' + href,
+                            type: 'ai',
+                            icon: getIconForGame(href)
+                        });
+                    }
+                });
+            } catch (error) {
+                aiGames = [
+                    { name: '2048', path: 'games/2048.html', type: 'ai', icon: '🔢' },
+                    { name: 'Atari Breakout', path: 'games/atari-breakout.html', type: 'ai', icon: '🧱' },
+                    { name: 'Block Blast', path: 'games/block-blast.html', type: 'ai', icon: '💥' },
+                    { name: 'Chess', path: 'games/chess.html', type: 'ai', icon: '♟️' },
+                    { name: 'Connect 4', path: 'games/connect-4.html', type: 'ai', icon: '🔴' },
+                    { name: 'Flappy Bird', path: 'games/flappy-bird.html', type: 'ai', icon: '🐦' },
+                    { name: 'Minecraft', path: 'games/minecraft.html', type: 'ai', icon: '🟫' },
+                    { name: 'Minecraft V2', path: 'games/minecraft-v2.html', type: 'ai', icon: '⛏️' },
+                    { name: 'Minesweeper', path: 'games/minesweeper.html', type: 'ai', icon: '💣' },
+                    { name: 'Powdersim', path: 'games/powdersim.html', type: 'ai', icon: '⚗️' },
+                    { name: 'Snake', path: 'games/snake.html', type: 'ai', icon: '🐍' },
+                    { name: 'Snake V2', path: 'games/snake-v2.html', type: 'ai', icon: '🐍' },
+                    { name: 'Tic Tac Toe', path: 'games/tic-tac-toe.html', type: 'ai', icon: '❌' }
+                ];
+            }
+        }
+
+        function showMessage(text, type) {
+            const msg = document.getElementById('message');
+            msg.textContent = text;
+            msg.className = 'message ' + type;
+            msg.style.display = 'block';
+            setTimeout(() => {
+                msg.style.display = 'none';
+            }, 3000);
+        }
+
+        function uploadGame() {
+            const name = document.getElementById('gameName').value.trim();
+            const fileInput = document.getElementById('gameFile');
+            const file = fileInput.files[0];
+
+            if (!name) {
+                showMessage('Please enter a game name!', 'error');
+                return;
+            }
+
+            if (!file) {
+                showMessage('Please select an HTML file!', 'error');
+                return;
+            }
+
+            if (!file.name.endsWith('.html')) {
+                showMessage('File must be an HTML file (.html)!', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const gameData = {
+                    id: Date.now(),
+                    name: name,
+                    content: e.target.result,
+                    fileName: file.name,
+                    uploadDate: new Date().toISOString(),
+                    icon: getIconForGame(file.name)
+                };
+
+                myGames.push(gameData);
+                saveMyGames();
+                
+                document.getElementById('gameName').value = '';
+                document.getElementById('gameFile').value = '';
+                
+                showMessage('Game uploaded successfully!', 'success');
+                switchTab('my');
+            };
+
+            reader.readAsText(file);
+        }
+
+        function deleteGame(id) {
+            if (confirm('Are you sure you want to delete this game?')) {
+                myGames = myGames.filter(g => g.id !== id);
+                saveMyGames();
+                renderGames();
+                showMessage('Game deleted successfully!', 'success');
+            }
+        }
+
+        function playGame(game) {
+            if (game.type === 'ai') {
+                window.open(game.path, '_blank');
+            } else {
+                const blob = new Blob([game.content], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                window.open(url, '_blank');
+            }
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.closest('.tab').classList.add('active');
+            renderGames();
+        }
+
+        function filterGames() {
+            renderGames();
+        }
+
+        function renderGames() {
+            const container = document.getElementById('gamesContainer');
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            let games = currentTab === 'my' ? myGames : aiGames;
+            games = games.filter(g => g.name.toLowerCase().includes(searchTerm));
+
+            if (games.length === 0) {
+                const message = currentTab === 'my' 
+                    ? 'No games yet! Upload your first HTML game to get started.'
+                    : 'No AI games found. Make sure the "AI GAMES" folder exists with .html files.';
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No games found</h3>
+                        <p>${message}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const gameIcons = ['🎮', '🕹️', '👾', '🎯', '🎲', '🃏', '🎰', '🏆', '⚔️', '🎪'];
+            
+            container.innerHTML = `
+                <div class="games-grid">
+                    ${games.map((game, index) => `
+                        <div class="game-card">
+                            <div class="game-thumbnail">
+                                ${game.icon || gameIcons[index % gameIcons.length]}
+                            </div>
+                            <div class="game-info">
+                                <div class="game-title">${game.name}</div>
+                                <div class="game-description">
+                                    ${game.type === 'ai' ? '🤖 AI Game' : '👤 Your Game'}
+                                </div>
+                                <div class="game-actions">
+                                    <button class="play-button" onclick='playGame(${JSON.stringify(game).replace(/'/g, "&#39;")})'>
+                                        ▶ Play
+                                    </button>
+                                    ${game.type !== 'ai' ? `
+                                        <button class="delete-button" onclick="deleteGame(${game.id})">
+                                            🗑️ Delete
+                                        </button>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        loadMyGames();
+        loadAIGames().then(() => {
+            renderGames();
+        });
+    </script>
+</body>
+</html>
