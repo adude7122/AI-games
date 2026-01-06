@@ -628,7 +628,7 @@
 
         async function loadAIGames() {
             try {
-                const response = await fetch('AI GAMES/');
+                const response = await fetch('games/');
                 const text = await response.text();
                 
                 const parser = new DOMParser();
@@ -813,4 +813,5 @@
     </script>
 </body>
 </html>
+
 
