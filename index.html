@@ -628,7 +628,7 @@
 
         async function loadAIGames() {
             try {
-                const response = await fetch('games/');
+                const response = await fetch('AI GAMES/');
                 const text = await response.text();
                 
                 const parser = new DOMParser();
@@ -646,7 +646,7 @@
                         
                         aiGames.push({
                             name: capitalizedName,
-                            path: 'games/' + href,
+                            path: 'AI GAMES/' + href,
                             type: 'ai',
                             icon: getIconForGame(href)
                         });
@@ -654,19 +654,19 @@
                 });
             } catch (error) {
                 aiGames = [
-                    { name: '2048', path: 'games/2048.html', type: 'ai', icon: '🔢' },
-                    { name: 'Atari Breakout', path: 'games/atari-breakout.html', type: 'ai', icon: '🧱' },
-                    { name: 'Block Blast', path: 'games/block-blast.html', type: 'ai', icon: '💥' },
-                    { name: 'Chess', path: 'games/chess.html', type: 'ai', icon: '♟️' },
-                    { name: 'Connect 4', path: 'games/connect-4.html', type: 'ai', icon: '🔴' },
-                    { name: 'Flappy Bird', path: 'games/flappy-bird.html', type: 'ai', icon: '🐦' },
-                    { name: 'Minecraft', path: 'games/minecraft.html', type: 'ai', icon: '🟫' },
-                    { name: 'Minecraft V2', path: 'games/minecraft-v2.html', type: 'ai', icon: '⛏️' },
-                    { name: 'Minesweeper', path: 'games/minesweeper.html', type: 'ai', icon: '💣' },
-                    { name: 'Powdersim', path: 'games/powdersim.html', type: 'ai', icon: '⚗️' },
-                    { name: 'Snake', path: 'games/snake.html', type: 'ai', icon: '🐍' },
-                    { name: 'Snake V2', path: 'games/snake-v2.html', type: 'ai', icon: '🐍' },
-                    { name: 'Tic Tac Toe', path: 'games/tic-tac-toe.html', type: 'ai', icon: '❌' }
+                    { name: '2048', path: 'AI GAMES/2048.html', type: 'ai', icon: '🔢' },
+                    { name: 'Atari Breakout', path: 'AI GAMES/atari-breakout.html', type: 'ai', icon: '🧱' },
+                    { name: 'Block Blast', path: 'AI GAMES/block-blast.html', type: 'ai', icon: '💥' },
+                    { name: 'Chess', path: 'AI GAMES/chess.html', type: 'ai', icon: '♟️' },
+                    { name: 'Connect 4', path: 'AI GAMES/connect-4.html', type: 'ai', icon: '🔴' },
+                    { name: 'Flappy Bird', path: 'AI GAMES/flappy-bird.html', type: 'ai', icon: '🐦' },
+                    { name: 'Minecraft', path: 'AI GAMES/minecraft.html', type: 'ai', icon: '🟫' },
+                    { name: 'Minecraft V2', path: 'AI GAMES/minecraft-v2.html', type: 'ai', icon: '⛏️' },
+                    { name: 'Minesweeper', path: 'AI GAMES/minesweeper.html', type: 'ai', icon: '💣' },
+                    { name: 'Powdersim', path: 'AI GAMES/powdersim.html', type: 'ai', icon: '⚗️' },
+                    { name: 'Snake', path: 'AI GAMES/snake.html', type: 'ai', icon: '🐍' },
+                    { name: 'Snake V2', path: 'AI GAMES/snake-v2.html', type: 'ai', icon: '🐍' },
+                    { name: 'Tic Tac Toe', path: 'AI GAMES/tic-tac-toe.html', type: 'ai', icon: '❌' }
                 ];
             }
         }
